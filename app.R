@@ -8,17 +8,33 @@ library(shinyWidgets)
 df <- read.delim("https://raw.githubusercontent.com/AaRC-Animal-aDNA-Research-Community/metAaRCive/refs/heads/main/metAaRCive.txt", sep = "\t", header = TRUE, encoding = "UTF-8")
 
 # format data
-df$sample_age <- as.numeric(df$sample_age)
-df$nuclear_depth_of_coverage <- as.numeric(df$nuclear_depth_of_coverage)
+df$sample_age <- suppressWarnings(as.numeric(df$sample_age))
+df$nuclear_depth_of_coverage <- suppressWarnings(as.numeric(df$nuclear_depth_of_coverage))
 df$latitude <- as.numeric(df$latitude)
 df$longitude <- as.numeric(df$longitude)
+
+numeric_range <- function(x, field_name) {
+  values <- x[is.finite(x)]
+  if (!length(values)) {
+    stop(sprintf("Cannot initialize %s controls: no numeric values were found.", field_name))
+  }
+
+  bounds <- range(values)
+  if (bounds[1] == bounds[2]) {
+    bounds <- bounds + c(-1, 1)
+  }
+  bounds
+}
+
+age_range <- numeric_range(df$sample_age, "sample age")
+coverage_range <- numeric_range(df$nuclear_depth_of_coverage, "nuclear coverage")
 
 ui <- navbarPage(
   title = div(
     style = "display: flex; align-items: center; padding-left: 10px;",
     div(
       tags$img(src = "AaRC_logo.png", height = "40px", style = "margin-right: 0px;"),
-      tags$div("aDNA Metadata",
+      tags$div("metAaRCive Explorer",
                style = "font-size: 20px; text-align: center; color: black; font-weight: normal;"
       )
     )
@@ -72,13 +88,13 @@ ui <- navbarPage(
                                     multiple = TRUE,
                                     options = list(`actions-box` = TRUE)),
                         
-                        pickerInput("platform", "Sequencing Platform",
+                        pickerInput("platform", "Sequencing platform",
                                     choices = unique(df$nuclear_sequencing_platform),
                                     selected = unique(df$nuclear_sequencing_platform),
                                     multiple = TRUE,
                                     options = list(`actions-box` = TRUE)),
                         
-                        pickerInput("strandedness", "Library Strandedness",
+                        pickerInput("strandedness", "Nuclear library strandedness",
                                     choices = unique(df$nuclear_lib_strandedness),
                                     selected = unique(df$nuclear_lib_strandedness),
                                     multiple = TRUE,
@@ -87,23 +103,23 @@ ui <- navbarPage(
                         # Sliders and inline numeric inputs for Age
                         # Compact Age inputs
                         div(style = "margin-top: 15px;",
-                            sliderInput("age", "Sample Age Range (Years BP)",
-                                        min = 0, max = 150000, value = c(0, 150000)),
+                            sliderInput("age", "Sample age (years BP)",
+                                        min = age_range[1], max = age_range[2], value = age_range),
                             div(style = "display: flex; align-items: center; gap: 5px;",
-                                numericInput("age_min", NULL, value = 0, min = 0, max = 150000, width = "80px"),
+                                numericInput("age_min", NULL, value = age_range[1], min = age_range[1], max = age_range[2], width = "80px"),
                                 span("to"),
-                                numericInput("age_max", NULL, value = 150000, min = 0, max = 150000, width = "80px")
+                                numericInput("age_max", NULL, value = age_range[2], min = age_range[1], max = age_range[2], width = "80px")
                             )
                         ),
                         
                         # Compact Coverage inputs
                         div(style = "margin-top: 15px;",
-                            sliderInput("coverage", "Nuclear Coverage",
-                                        min = 0, max = 40, value = c(0, 40)),
+                            sliderInput("coverage", "Nuclear coverage",
+                                        min = coverage_range[1], max = coverage_range[2], value = coverage_range),
                             div(style = "display: flex; align-items: center; gap: 5px;",
-                                numericInput("coverage_min", NULL, value = 0, min = 0, max = 40, width = "80px"),
+                                numericInput("coverage_min", NULL, value = coverage_range[1], min = coverage_range[1], max = coverage_range[2], width = "80px"),
                                 span("to"),
-                                numericInput("coverage_max", NULL, value = 40, min = 0, max = 40, width = "80px")
+                                numericInput("coverage_max", NULL, value = coverage_range[2], min = coverage_range[1], max = coverage_range[2], width = "80px")
                             )
                         ),
                         
@@ -182,16 +198,38 @@ server <- function(input, output, session) {
     updateNumericInput(session, "age_min", value = input$age[1])
     updateNumericInput(session, "age_max", value = input$age[2])
   })
-  observeEvent(c(input$age_min, input$age_max), {
-    updateSliderInput(session, "age", value = c(input$age_min, input$age_max))
-  })
+  observeEvent(list(input$age_min, input$age_max), {
+    values <- c(input$age_min, input$age_max)
+    req(length(values) == 2, all(is.finite(values)))
+    values <- sort(pmin(age_range[2], pmax(age_range[1], values)))
+    if (!isTRUE(all.equal(input$age_min, values[1]))) {
+      updateNumericInput(session, "age_min", value = values[1])
+    }
+    if (!isTRUE(all.equal(input$age_max, values[2]))) {
+      updateNumericInput(session, "age_max", value = values[2])
+    }
+    if (!isTRUE(all.equal(input$age, values))) {
+      updateSliderInput(session, "age", value = values)
+    }
+  }, ignoreInit = TRUE)
   observeEvent(input$coverage, {
     updateNumericInput(session, "coverage_min", value = input$coverage[1])
     updateNumericInput(session, "coverage_max", value = input$coverage[2])
   })
-  observeEvent(c(input$coverage_min, input$coverage_max), {
-    updateSliderInput(session, "coverage", value = c(input$coverage_min, input$coverage_max))
-  })
+  observeEvent(list(input$coverage_min, input$coverage_max), {
+    values <- c(input$coverage_min, input$coverage_max)
+    req(length(values) == 2, all(is.finite(values)))
+    values <- sort(pmin(coverage_range[2], pmax(coverage_range[1], values)))
+    if (!isTRUE(all.equal(input$coverage_min, values[1]))) {
+      updateNumericInput(session, "coverage_min", value = values[1])
+    }
+    if (!isTRUE(all.equal(input$coverage_max, values[2]))) {
+      updateNumericInput(session, "coverage_max", value = values[2])
+    }
+    if (!isTRUE(all.equal(input$coverage, values))) {
+      updateSliderInput(session, "coverage", value = values)
+    }
+  }, ignoreInit = TRUE)
   
   output$map <- renderLeaflet({
     leaflet() %>%
