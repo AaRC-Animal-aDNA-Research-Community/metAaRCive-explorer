@@ -113,9 +113,9 @@ ui <- navbarPage(
                             sliderInput("age", "Sample age (years BP)",
                                         min = age_range[1], max = age_range[2], value = age_range),
                             div(style = "display: flex; align-items: center; gap: 5px;",
-                                numericInput("age_min", NULL, value = age_range[1], min = age_range[1], max = age_range[2], width = "80px"),
+                                numericInput("age_min", NULL, value = age_range[1], min = age_range[1], max = age_range[2], width = "100px"),
                                 span("to"),
-                                numericInput("age_max", NULL, value = age_range[2], min = age_range[1], max = age_range[2], width = "80px")
+                                numericInput("age_max", NULL, value = age_range[2], min = age_range[1], max = age_range[2], width = "100px")
                             )
                         ),
                         
