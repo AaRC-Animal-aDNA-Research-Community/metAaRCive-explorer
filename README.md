@@ -1,4 +1,4 @@
-# metAaRCive-shinyapp
+# metAaRCive-explorer
 
 This is the repo for the R shiny app for exploring the [metAaRCive](https://github.com/AaRC-Animal-aDNA-Research-Community/metAaRCive) database, a resource of metadata for published ancient animal genomes curated by members of [AaRC](https://animal-adna.org/).
 
