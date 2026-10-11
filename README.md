@@ -8,10 +8,11 @@ Thanks go to [Harry Gordon](https://github.com/HGord2022) for developing the ori
 
 ## Repository structure and files
 
-- `metAaRCive/`
-  - `rsconnect/` - Deployment configuration for the Shiny app
-  - `www/` - Directory for images and other assets to be used in the app
-  - `app.R` - Main script for the R Shiny app
+- `renv/` - R environment for automatic deployment
+- `rsconnect/` - Deployment configuration for the Shiny app
+- `www/` - Directory for images and other assets to be used in the app
+- `app.R` - Main script for the R Shiny app
+- `renv.lock` - R environment lock file for automatic deployment
 
 ## Developer notes
 
