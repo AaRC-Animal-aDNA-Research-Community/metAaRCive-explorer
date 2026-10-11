@@ -12,7 +12,6 @@ df$sample_age <- as.numeric(df$sample_age)
 df$nuclear_depth_of_coverage <- as.numeric(df$nuclear_depth_of_coverage)
 df$latitude <- as.numeric(df$latitude)
 df$longitude <- as.numeric(df$longitude)
-df <- df %>% filter(!is.na(latitude), !is.na(longitude), !is.na(sample_age), !is.na(nuclear_depth_of_coverage))
 
 ui <- navbarPage(
   title = div(
@@ -167,10 +166,10 @@ server <- function(input, output, session) {
   filteredData <- reactive({
     df %>%
       filter(
-        sample_age >= input$age[1],
-        sample_age <= input$age[2],
-        nuclear_depth_of_coverage >= input$coverage[1],
-        nuclear_depth_of_coverage <= input$coverage[2],
+        sample_age >= input$age[1] | is.na(sample_age),
+        sample_age <= input$age[2] | is.na(sample_age),
+        nuclear_depth_of_coverage >= input$coverage[1] | is.na(nuclear_depth_of_coverage),
+        nuclear_depth_of_coverage <= input$coverage[2] | is.na(nuclear_depth_of_coverage),
         samp_taxon_common %in% input$species,
         molecular_sex %in% input$sex,
         nuclear_sequencing_platform %in% input$platform,
