@@ -161,8 +161,8 @@ ui <- navbarPage(
   
   tabPanel("Curators",
            div(class = "container-custom",
-               h2("Curators & Contributors"),
-               p("This database was curated by the following researchers."),
+               h2("Curators & contributors"),
+               p("Thanks go to the following people who have contributed to the metAaRCive project:"),
                tags$ul(
                  tags$li("Dr Anders Bergström – University of East Anglia"),
                  tags$li("Dr Kevin Daly – University College Dublin"),
