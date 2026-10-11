@@ -12,5 +12,3 @@ Thanks go to [Harry Gordon](https://github.com/HGord2022) for developing the ori
   - `rsconnect/` - Deployment configuration for the Shiny app
   - `www/` - Directory for images and other assets to be used in the app
   - `app.R` - Main script for the R Shiny app
-  - `get_df.R` - Downloads and filters the latest version of the database from the metAaRCive [repo](https://github.com/AaRC-Animal-aDNA-Research-Community/metAaRCive)
-  - `aarc_metadata.csv` - Dataframe generated from `get_df.R`
