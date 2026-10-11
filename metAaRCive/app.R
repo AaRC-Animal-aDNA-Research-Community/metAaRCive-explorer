@@ -12,7 +12,6 @@ df$sample_age <- as.numeric(df$sample_age)
 df$nuclear_depth_of_coverage <- as.numeric(df$nuclear_depth_of_coverage)
 df$latitude <- as.numeric(df$latitude)
 df$longitude <- as.numeric(df$longitude)
-df <- df %>% filter(!is.na(latitude), !is.na(longitude), !is.na(sample_age), !is.na(nuclear_depth_of_coverage))
 
 ui <- navbarPage(
   title = div(
