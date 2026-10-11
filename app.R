@@ -3,9 +3,16 @@ library(leaflet)
 library(dplyr)
 library(DT)
 library(shinyWidgets)
+library(jsonlite)
 
 # read data
 df <- read.delim("https://raw.githubusercontent.com/AaRC-Animal-aDNA-Research-Community/metAaRCive/refs/heads/main/metAaRCive.txt", sep = "\t", header = TRUE, encoding = "UTF-8")
+
+# read curator data
+curators <- jsonlite::fromJSON(
+  "https://raw.githubusercontent.com/AaRC-Animal-aDNA-Research-Community/metAaRCive/refs/heads/main/.zenodo.json"
+)$creators$name
+curators <- sub("^([^,]+),\\s*(.+)$", "\\2 \\1", curators)
 
 # format data
 df$sample_age <- suppressWarnings(as.numeric(df$sample_age))
@@ -163,16 +170,7 @@ ui <- navbarPage(
            div(class = "container-custom",
                h2("Curators & contributors"),
                p("Thanks go to the following people who have contributed to the metAaRCive project:"),
-               tags$ul(
-                 tags$li("Dr Anders Bergström – University of East Anglia"),
-                 tags$li("Dr Kevin Daly – University College Dublin"),
-                 tags$li("Róisín Ferguson – University of East Anglia"),
-                 tags$li("He Yu – Peking University"),
-                 tags$li("Matthias Sherman – Francis Crick Institute"),
-                 tags$li("Jolijn Erven – Trinity College Dublin"),
-                 tags$li("Lachie Scarsbrook – University of Oxford"),
-                 tags$li("Marco De Martino – Università di Roma Tor Vergata")
-               )
+               tags$ul(lapply(curators, function(name) tags$li(name)))
            )
   )
 )
