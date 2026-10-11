@@ -19,9 +19,9 @@ Thanks go to [Harry Gordon](https://github.com/HGord2022) for developing the ori
 
 After pushing new changes, the server needs to be redeployed to reflect the changes.
 
-At the moment, only @DeondeJager is authenticated to do this, but the plan is to implement automatic deployment via GitHub Actions in future.
+At the moment, only [@DeondeJager](https://github.com/DeondeJager) is authenticated to do this, but the plan is to implement automatic deployment via GitHub Actions in future.
 
-For now, ask @DeondeJager to re-deploy if any changes are made.
+For now, ask [@DeondeJager](https://github.com/DeondeJager) to re-deploy if any changes are made until auto deployment has been implemented.
 
 **Deployment process**:
 
