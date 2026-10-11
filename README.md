@@ -12,3 +12,23 @@ Thanks go to [Harry Gordon](https://github.com/HGord2022) for developing the ori
   - `rsconnect/` - Deployment configuration for the Shiny app
   - `www/` - Directory for images and other assets to be used in the app
   - `app.R` - Main script for the R Shiny app
+
+## Developer notes
+
+### Deployment
+
+After pushing new changes, the server needs to be redeployed to reflect the changes.
+
+At the moment, only @DeondeJager is authenticated to do this, but the plan is to implement automatic deployment via GitHub Actions in future.
+
+For now, ask @DeondeJager to re-deploy if any changes are made.
+
+**Deployment process**:
+
+- Clone/pull repo to local machine.
+- Open `app.R` in Rstudio and run the following code:
+
+```
+library(rsconnect)
+deployApp()
+```
